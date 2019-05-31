@@ -1,0 +1,4 @@
+>Secuencia de prueba 1
+ACCGTCTT
+>Secuencia de prueba 2
+CGTCTT
