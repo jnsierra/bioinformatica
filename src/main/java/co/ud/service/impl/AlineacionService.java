@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.ud.component.IMatrizResultante;
+import co.ud.dto.secuencia.CeldaMatrizDto;
 import co.ud.entity.ArchivoFastaEntity;
 import co.ud.enumeracion.TIPO_SECUENCIA;
 import co.ud.repository.IArchivoFastaRepository;
@@ -40,7 +41,7 @@ public class AlineacionService implements IAlineacionService {
 		matrizResultante.generaListaCaracteres();
 		generarMatrizResultante();
 		matrizResultante.imprimirMatriz();
-		return null;
+		return matrizResultante.persisteSecuenciacion();
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class AlineacionService implements IAlineacionService {
 		LOGGER.info("Valor de Y".concat(matrizResultante.valorEjeY().toString()) );
 		for(int i = 0 ; i < matrizResultante.valorEjeX() ; i++) {
 			for(int j = 0 ; j < matrizResultante.valorEjeY() ; j++) {
-				Short valMaximo =  evaluaMovimientosPosicion(i,j);
+				CeldaMatrizDto valMaximo =  evaluaMovimientosPosicion(i,j);
 				//LOGGER.info("Valor Maximo de la posición: ".concat(valMaximo.toString()));
 				matrizResultante.setValMatrizRes(i,j,valMaximo);
 			}
@@ -104,7 +105,7 @@ public class AlineacionService implements IAlineacionService {
 	 * @param y
 	 * @return
 	 */
-	private Short evaluaMovimientosPosicion(Integer x, Integer y) {
+	private CeldaMatrizDto evaluaMovimientosPosicion(Integer x, Integer y) {
 		LOGGER.debug("Valores para las coordenadas X = ".concat(x.toString()).concat(" ... Y = ").concat(y.toString()));
 		Short movUno = matrizResultante.movimientoUno(x, y);
 		LOGGER.debug("Valor moviemiento uno: ".concat(movUno.toString()));
@@ -112,9 +113,25 @@ public class AlineacionService implements IAlineacionService {
 		LOGGER.debug("Valor moviemiento Dos: ".concat(movDos.toString()));
 		Short movTres = matrizResultante.movimientoTres(x, y);
 		LOGGER.debug("Valor moviemiento Dos: ".concat(movTres.toString()));
-		Integer maximoUno = Math.max(movUno, movDos);
-		Integer maximoDos = Math.max(maximoUno, movTres.intValue());
-		return maximoDos.shortValue();
+		return evaluaMayor(movUno, movDos, movTres) ;
+	}
+	/**
+	 * Metodo con el cual evaluo cual es el numero mayor de las tres posibles
+	 * @param uno
+	 * @param dos
+	 * @param tres
+	 * @return
+	 */
+	private CeldaMatrizDto evaluaMayor(Short uno, Short dos, Short tres) {
+		if(uno.compareTo(dos) >= 0 && uno.compareTo(tres) >= 0 ) {
+			return CeldaMatrizDto.of(uno, Integer.valueOf("1"), uno, dos, tres);
+		}else if(dos.compareTo(uno) >= 0 && dos.compareTo(tres) >= 0 ) {
+			return CeldaMatrizDto.of(dos, Integer.valueOf("2"), uno, dos, tres);
+		}else if(tres.compareTo(dos) >= 0 && tres.compareTo(uno) >= 0 ) {
+			return CeldaMatrizDto.of(tres, Integer.valueOf("3"), uno, dos, tres);
+		}
+		return null;
+		
 	}
 
 }

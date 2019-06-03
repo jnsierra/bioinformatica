@@ -24,6 +24,7 @@ public class ReaderFileService implements IReaderFileService {
 
 	@Override
 	public List<String> getFile() throws IOException {
+		LOGGER.debug(".:: Inicio de la lectura del archivo plano ::.");
 		List<String> lines = Files.readAllLines(Paths.get(res.getURI()), StandardCharsets.UTF_8);
 		return lines;
 	}

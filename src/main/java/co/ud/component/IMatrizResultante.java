@@ -1,9 +1,10 @@
 package co.ud.component;
 
+import co.ud.dto.secuencia.CeldaMatrizDto;
 import co.ud.enumeracion.TIPO_SECUENCIA;
 
 public interface IMatrizResultante {
-	void setValMatrizRes(Integer x, Integer y, Short val);
+	void setValMatrizRes(Integer x, Integer y, CeldaMatrizDto val);
 	
 	/**
 	 * Metodo con el cual seteo las secuencias que se desean alinear
@@ -53,5 +54,8 @@ public interface IMatrizResultante {
 	 * @return
 	 */
 	Integer valorEjeY();
+	
+	
+	Long persisteSecuenciacion();
 	
 }

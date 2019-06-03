@@ -8,10 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+
 import co.ud.component.IMatrizBaseConsultaService;
 import co.ud.component.IMatrizResultante;
+import co.ud.dto.secuencia.CeldaMatrizDto;
+import co.ud.entity.SecuenciacionEntity;
 import co.ud.enumeracion.CARACTERES_SECUENCIA;
 import co.ud.enumeracion.TIPO_SECUENCIA;
+import co.ud.repository.ISecuenciacionRepository;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +42,9 @@ public class MatrizResultante implements IMatrizResultante {
 	private List<Short> listGapSec;
 	@Getter
 	@Setter
-	private List<List<Short>> matrizResultante;
+	private List<List<CeldaMatrizDto>> matrizResultante;
+	@Autowired
+	ISecuenciacionRepository secuenciacionRepository; 
 
 	@Autowired
 	IMatrizBaseConsultaService matrizBaseConsultaService;
@@ -65,9 +72,9 @@ public class MatrizResultante implements IMatrizResultante {
 	@Override
 	public void generaMatrizResultante() {
 		// Iniciar matriz resultante
-		matrizResultante = new ArrayList<List<Short>>();
+		matrizResultante = new ArrayList<List<CeldaMatrizDto>>();
 		for (int i = 0; i < secSecundaria.length(); i++) {
-			matrizResultante.add(new ArrayList<Short>());
+			matrizResultante.add(new ArrayList<CeldaMatrizDto>());
 		}
 		// Inicial lista para los gaps
 		listGapPrinc = new ArrayList<>();
@@ -121,10 +128,10 @@ public class MatrizResultante implements IMatrizResultante {
 	@Override
 	public void imprimirMatriz() {
 		logger.info("*********** Matriz Base  ***********");
-		for (List<Short> filas : getMatrizResultante()) {
+		for (List<CeldaMatrizDto> filas : getMatrizResultante()) {
 			String fila = "";
-			for (Short columnas : filas) {
-				fila += " " + columnas;
+			for (CeldaMatrizDto columnas : filas) {
+				fila += " " + columnas.getValor() + " : " + columnas.getMovimiento() + " ... ";
 			}
 			logger.info("Columna : ".concat(fila));
 		}
@@ -157,7 +164,7 @@ public class MatrizResultante implements IMatrizResultante {
 	}
 
 	@Override
-	public void setValMatrizRes(Integer x, Integer y, Short val) {
+	public void setValMatrizRes(Integer x, Integer y, CeldaMatrizDto val) {
 		getMatrizResultante().get(y).add(val);
 	}
 	/**
@@ -177,7 +184,7 @@ public class MatrizResultante implements IMatrizResultante {
 		if(x.equals(Integer.valueOf("0"))) {
 			return listGapSec.get(y-1);
 		}
-		return getMatrizResultante().get(y-1).get(x-1);
+		return getMatrizResultante().get(y-1).get(x-1).getValor();
 	}
 	
 	/**
@@ -191,7 +198,7 @@ public class MatrizResultante implements IMatrizResultante {
 		if(x.equals(Integer.valueOf("0"))) {
 			return listGapSec.get(y);
 		}
-		return matrizResultante.get(y).get(x-1);
+		return matrizResultante.get(y).get(x-1).getValor();
 	}
 	/**
 	 * Metodo con el cual obtengo el valor de arriba a la izquierda
@@ -204,7 +211,7 @@ public class MatrizResultante implements IMatrizResultante {
 		if(y.equals(Integer.valueOf("0"))) {
 			return listGapPrinc.get(x);
 		}
-		return matrizResultante.get(y-1).get(x);
+		return matrizResultante.get(y-1).get(x).getValor();
 	}
 
 	@Override
@@ -215,5 +222,17 @@ public class MatrizResultante implements IMatrizResultante {
 	@Override
 	public Integer valorEjeY() {
 		return getSecSecundaria().length();
+	}
+
+	@Override
+	public Long persisteSecuenciacion() {
+		SecuenciacionEntity sec = new SecuenciacionEntity();
+		sec.setSecuenciaPrinc(getSecPrincipal());
+		sec.setSecuenciaSec(getSecSecundaria());
+		Gson gson = new Gson();
+		String objJson = gson.toJson(getMatrizResultante());
+		sec.setJsonMatriz(objJson);
+		sec = secuenciacionRepository.save(sec);
+		return sec.getId();
 	}
 }
