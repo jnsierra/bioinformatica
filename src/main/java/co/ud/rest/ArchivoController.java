@@ -1,5 +1,6 @@
 package co.ud.rest;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +21,7 @@ import co.ud.service.IArchivoFastaService;
 
 @RestController
 @RequestMapping("/v.1/archivo")
+@CrossOrigin(value = "http://localhost:8082")
 public class ArchivoController {
 	
 	@Autowired
@@ -33,7 +36,11 @@ public class ArchivoController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArchivoFastaDto[]> getAll(){
-		return new ResponseEntity<ArchivoFastaDto[]>(mapper.map(archivoFastaService.getAll(), ArchivoFastaDto[].class),HttpStatus.OK);
+		List<ArchivoFastaEntity> archivos = archivoFastaService.getAll();
+		if(archivos == null || archivos.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<ArchivoFastaDto[]>(mapper.map(archivos, ArchivoFastaDto[].class),HttpStatus.OK);
 	}
 	
 	
