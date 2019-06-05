@@ -30,4 +30,18 @@ public class MapperConfig {
 		});
 		return modelMapper;
 	}
+	
+	@Bean("mapperArchivoSimpleDtoToEntity")
+	public ModelMapper getMapperArchivoSimpleDtoToEntity() {
+		ModelMapper modelMapper = new ModelMapper();
+		
+		modelMapper.addMappings(new PropertyMap<ArchivoFastaDto,ArchivoFastaEntity>() {
+
+			@Override
+			protected void configure() {
+				skip().setLineas(null);				
+			}
+		});
+		return modelMapper;
+	}
 }

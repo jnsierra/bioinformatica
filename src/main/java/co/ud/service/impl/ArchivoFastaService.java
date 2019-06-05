@@ -26,4 +26,16 @@ public class ArchivoFastaService implements IArchivoFastaService{
 		return archivoFastaRepository.findById(id);
 	}
 
+	@Override
+	public Boolean deleteById(Long id) {
+		archivoFastaRepository.deleteById(id);
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public ArchivoFastaEntity insertFile(ArchivoFastaEntity archivo) {
+		archivo = archivoFastaRepository.save(archivo);
+		return archivo;
+	}
+
 }

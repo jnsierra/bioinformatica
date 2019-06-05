@@ -18,4 +18,17 @@ public interface IArchivoFastaService {
 	 * @return
 	 */
 	Optional<ArchivoFastaEntity> getById(Long id);
+	/**
+	 * Metodo con el cual elimino un archivo por medio de su id
+	 * @param id
+	 * @return
+	 */
+	Boolean deleteById(Long id);
+	
+	/**
+	 * Metodo con el cual inserto un archivo secuencia
+	 * @param archivo
+	 * @return
+	 */
+	ArchivoFastaEntity insertFile(ArchivoFastaEntity archivo);
 }
