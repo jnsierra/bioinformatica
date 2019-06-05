@@ -17,7 +17,7 @@ import co.ud.service.ILeerFastaFacadeService;
 
 @RestController
 @RequestMapping(value = "/v.1/file")
-@CrossOrigin(value = "http://localhost:8082")
+@CrossOrigin( origins = "*")
 public class FileControler {
 	
 	@Autowired

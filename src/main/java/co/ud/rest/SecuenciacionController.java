@@ -19,7 +19,7 @@ import co.ud.service.ISecuenciacionService;
 
 @RestController
 @RequestMapping(value = "/v.1/secuenciacion")
-@CrossOrigin(value = "http://localhost:8082")
+@CrossOrigin( origins = "*")
 public class SecuenciacionController {
 	
 	@Autowired

@@ -21,7 +21,7 @@ import co.ud.service.IArchivoFastaService;
 
 @RestController
 @RequestMapping("/v.1/archivo")
-@CrossOrigin(value = "http://localhost:8082")
+@CrossOrigin( origins = "*")
 public class ArchivoController {
 	
 	@Autowired
