@@ -1,4 +1,4 @@
 >Secuencia de prueba 1
-ACCGTCTT
+ACCGTCTTTTTT
 >Secuencia de prueba 2
 CGTCTT
